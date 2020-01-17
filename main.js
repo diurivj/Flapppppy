@@ -105,7 +105,7 @@ function generatePipes() {
   if (frames % 300 === 0) {
     const min = 100
     const max = 300
-    const ventanita = 500
+    const ventanita = 100
     const randomHeight = Math.floor(Math.random() * (max - min)) + min
     obstacles.push(new Pipe(0, randomHeight, false))
     obstacles.push(
