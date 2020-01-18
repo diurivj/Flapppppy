@@ -144,24 +144,32 @@ function checkCollitions() {
 
 } 
 
+
+function restart(e){
+  if({keyCode}===13){
+    start()
+
+  }
+}
+
 function gameOver() {
 
 
 
-ctx.fillStyle = "#f66";
+ctx.fillStyle = "#f55";
 ctx.fillRect( 0,115, 400,60);
 ctx.fillStyle = "#fff";
 ctx.font = "30px Arial";
 
-ctx.fillText("Game Over",115,150);
+ctx.fillText("Game Over",130,150);
 
 clearInterval(interval)
-
-  
+canvas.addEventListener('click',start) 
 }
 
 function start() {
   interval = setInterval(update, 1000 / 60)
+  
 }
 
 start()
