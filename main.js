@@ -97,10 +97,8 @@ function update() {
   flappy.draw()
   generatePipes()
   drawPipe()
-
   checkCollitions()
-
-
+  putScore()
 }
 
 function generatePipes() {
@@ -111,7 +109,6 @@ function generatePipes() {
     const randomHeight = Math.floor(Math.random() * (max - min)) + min
     obstacles.push(new Pipe(0, randomHeight, false))
     obstacles.push(new Pipe(randomHeight + ventanita, canvas.height - randomHeight, true))
-    // console.log(obstacles)
   }
 }
 
@@ -120,17 +117,31 @@ function drawPipe() {
     return pipe.draw()})
 }
 
+function putScore(){
+    ctx.fillStyle = "#066";
+    ctx.fillRect( 0,0,400,50);
+    ctx.fillStyle = "#fff";
+    ctx.font = "30px Arial";
+    ctx.fillText("Score: "+ score ,270,40);
+    return score
 
+}
 function checkCollitions() {
 
   if (flappy.y >= canvas.height - flappy.height) return gameOver()
-          
-  obstacles.forEach((pipe, i) => {    
+
+  obstacles.forEach((pipe, i) => {
+  if (pipe.x+pipe.width == flappy.x) {
+        score +=0.5
+        putScore()
+    }  
    if(pipe.x + pipe.width <= 0){
          obstacles.splice(i, 1)
        }
     flappy.isTouching(pipe) ? gameOver() : null
   })
+
+
 } 
 
 function gameOver() {
