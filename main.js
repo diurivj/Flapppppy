@@ -2,9 +2,9 @@ const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 let interval
 let frames = 0
-const obstacles = []
+let score =0;
 
-// space 32
+const obstacles = []
 
 const images = {
   bg: './images/bg.png',
@@ -57,12 +57,10 @@ class Flappy {
     this.y -= 25
   }
   isTouching(pipe) {
-    return (
-      this.x < pipe.x + pipe.width &&
-      this.x + this.width > pipe.x &&
-      this.y < pipe.y + pipe.height &&
-      this.y + this.height > pipe.y
-    )
+    return (this.x < pipe.x + pipe.width  && 
+            this.x + this.width > pipe.x  && 
+            this.y < pipe.y + pipe.height && 
+            this.y + this.height > pipe.y )
   }
 }
 
@@ -94,47 +92,84 @@ const board = new Board()
 function update() {
   frames++
   ctx.clearRect(0, 0, canvas.width, canvas.height)
+
   board.draw()
   flappy.draw()
   generatePipes()
   drawPipe()
   checkCollitions()
+  putScore()
 }
 
 function generatePipes() {
   if (frames % 300 === 0) {
     const min = 100
-    const max = 300
-    const ventanita = 100
+    const max = 400
+    const ventanita = 150
     const randomHeight = Math.floor(Math.random() * (max - min)) + min
     obstacles.push(new Pipe(0, randomHeight, false))
-    obstacles.push(
-      new Pipe(randomHeight + ventanita, canvas.height - randomHeight, true)
-    )
-    console.log(obstacles)
+    obstacles.push(new Pipe(randomHeight + ventanita, canvas.height - randomHeight, true))
   }
 }
 
 function drawPipe() {
-  obstacles.forEach(pipe => pipe.draw())
+  obstacles.forEach(pipe => {
+    return pipe.draw()})
 }
 
+function putScore(){
+    ctx.fillStyle = "#066";
+    ctx.fillRect( 0,0,400,50);
+    ctx.fillStyle = "#fff";
+    ctx.font = "30px Arial";
+    ctx.fillText("Score: "+ score ,270,40);
+    return score
+
+}
 function checkCollitions() {
+
   if (flappy.y >= canvas.height - flappy.height) return gameOver()
+
   obstacles.forEach((pipe, i) => {
-    if (pipe.x + pipe.width <= 0) {
-      obstacles.splice(i, 1)
-    }
+  if (pipe.x+pipe.width == flappy.x) {
+        score +=0.5
+        putScore()
+    }  
+   if(pipe.x + pipe.width <= 0){
+         obstacles.splice(i, 1)
+       }
     flappy.isTouching(pipe) ? gameOver() : null
   })
+
+
+} 
+
+
+function restart(e){
+  if({keyCode}===13){
+    start()
+
+  }
 }
 
 function gameOver() {
-  clearInterval(interval)
+
+
+
+ctx.fillStyle = "#f55";
+ctx.fillRect( 0,115, 400,60);
+ctx.fillStyle = "#fff";
+ctx.font = "30px Arial";
+
+ctx.fillText("Game Over",130,150);
+
+clearInterval(interval)
+canvas.addEventListener('click',start) 
 }
 
 function start() {
   interval = setInterval(update, 1000 / 60)
+  
 }
 
 start()
